@@ -44,6 +44,9 @@ def _me(A, W):
     return D
 
 def moore_stress4(A):
+    return(_moore_stress(A, N4, get_num_of_4_neighbors(A)))
+
+def get_num_of_4_neighbors(A):
     T = np.ones_like(A) * 4
     (a,b) = T.shape
     (a,b) = (a-1, b-1)
@@ -58,11 +61,9 @@ def moore_stress4(A):
     T[a,0] = 2
     T[a,b] = 2
 
-    print(T)
+    return T
 
-    return(_moore_stress(A, N4, T))
-
-def moore_stress8(A):
+def get_num_of_8_neighbors(A):
     T = np.ones_like(A) * 8
     (a,b) = T.shape
     (a,b) = (a-1, b-1)
@@ -77,15 +78,38 @@ def moore_stress8(A):
     T[a,0] = 3
     T[a,b] = 3
 
-    print(T)
+    return T
 
-    return(_moore_stress(A, N8, T))
+def moore_stress8(A):
+    return(_moore_stress(A, N8, get_num_of_8_neighbors(A)))
 
 def _moore_stress(A, k, T):
     A2 = A * A
     D = T * A2 - 2 * A * conv(A, k) + conv(A2, k)
     return np.sum(D)
 
+def MoransI8(A):
+    (a,b) = A.shape
+    t = (a-1)*b + a*(b-1) + 2*(a-1)*(b-1)
+    return MoransI(A, N8, get_num_of_8_neighbors(A), t)
+
+def MoransI4(A):
+    (a,b) = A.shape
+    t = (a-1)*b + a*(b-1)
+    return MoransI(A, N4, get_num_of_4_neighbors(A), t)
+
+
+def MoransI(A, k, T, t):
+    x_ = np.mean(A)
+    Ak = conv(A, k)
+    (a, b) = A.shape
+    r = a * b
+    beta = np.sum(T)
+    M = A*Ak - T*A*x_ - Ak*x_
+
+    I = (r/t) * ((np.sum(M) + (x_**2) * beta) / np.sum((A - x_)**2))
+    return I
+
 if __name__ == "__main__":
     data = np.loadtxt('./Data/small_random.tsv', delimiter='\t')
-    print(moore_stress8(data))
+    print(MoransI4(data))
