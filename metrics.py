@@ -110,6 +110,16 @@ def MoransI(A, k, T, t):
     I = (r/t) * ((np.sum(M) + (x_**2) * beta) / np.sum((A - x_)**2))
     return I
 
+def full_eval(A):
+    return {
+        "ME4" : me4(A),
+        "ME8" : me8(A),
+        "MS4" : moore_stress4(A),
+        "MS8" : moore_stress8(A),
+        "MI4" : MoransI4(A),
+        "MI8" : MoransI8(A)
+    }
+
 if __name__ == "__main__":
     data = np.loadtxt('./Data/small_random.tsv', delimiter='\t')
     print(MoransI4(data))
