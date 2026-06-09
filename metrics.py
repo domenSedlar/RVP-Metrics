@@ -101,25 +101,57 @@ def MoransI4(A):
 
 def MoransI(A, k, T, t):
     x_ = np.mean(A)
+    A = A - x_
     Ak = conv(A, k)
     (a, b) = A.shape
     r = a * b
-    beta = np.sum(T)
-    M = A*Ak - T*A*x_ - Ak*x_
+    M = A*Ak
 
-    I = (r/t) * ((np.sum(M) + (x_**2) * beta) / np.sum((A - x_)**2))
+    I = (r/t) * ((np.sum(M)) / np.sum((A)**2))
     return I
 
 def full_eval(A):
     return {
-        "ME4" : me4(A),
+        "ME4" : str(me4(A)),
         "ME8" : me8(A),
-        "MS4" : moore_stress4(A),
+        "MS4" : str(moore_stress4(A)),
         "MS8" : moore_stress8(A),
-        "MI4" : MoransI4(A),
+        "MI4" : str(MoransI4(A)),
         "MI8" : MoransI8(A)
     }
 
 if __name__ == "__main__":
-    data = np.loadtxt('./Data/small_random.tsv', delimiter='\t')
-    print(MoransI4(data))
+
+    # Test with a simple pattern
+    A = np.array([
+        [1, 0, 1],
+        [0, 1, 0],
+        [1, 0, 1]
+    ], dtype=np.float64)
+    C = np.array([
+        [1, 1, 0],
+        [1, 1, 0],
+        [0, 0, 0]
+    ], dtype=np.float64)
+    B = np.array([
+        [1, 0, 1],
+        [0, 0, 0],
+        [1, 0, 1]
+    ], dtype=np.float64)
+    D = np.array([
+        [1, 0, 1, 0],
+        [0, 0, 0, 1],
+        [1, 1, 0, 0],
+        [0, 0, 0, 1]
+    ], dtype=np.float64)
+    E = np.array([
+        [1, 0, 1, 0],
+        [1, 1, 0, 0],
+        [1, 1, 0, 0],
+        [0, 0, 0, 1]
+    ], dtype=np.float64)
+
+
+    for a in [B]:
+        results = full_eval(a)
+        print('\t'.join(results.values()))
