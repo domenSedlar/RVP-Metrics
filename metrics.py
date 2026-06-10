@@ -112,11 +112,11 @@ def MoransI(A, k, T, t):
 
 def full_eval(A):
     return {
-        "ME4" : str(me4(A)),
+        "ME4" : me4(A),
         "ME8" : me8(A),
-        "MS4" : str(moore_stress4(A)),
+        "MS4" : moore_stress4(A),
         "MS8" : moore_stress8(A),
-        "MI4" : str(MoransI4(A)),
+        "MI4" : MoransI4(A),
         "MI8" : MoransI8(A)
     }
 
@@ -150,8 +150,3 @@ if __name__ == "__main__":
         [1, 1, 0, 0],
         [0, 0, 0, 1]
     ], dtype=np.float64)
-
-
-    for a in [B]:
-        results = full_eval(a)
-        print('\t'.join(results.values()))
