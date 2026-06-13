@@ -1,5 +1,7 @@
 import numpy as np
 import cv2
+import numpy as np
+
 
 N4 = np.array([
     [0, 1, 0],
@@ -117,8 +119,27 @@ def full_eval(A):
         "MS4" : moore_stress4(A),
         "MS8" : moore_stress8(A),
         "MI4" : MoransI4(A),
-        "MI8" : MoransI8(A)
+        "MI8" : MoransI8(A),
+        "WV2" : wv2(A),
+        "WV3" : wv3(A)
     }
+
+def wv2(A):
+    return wv(A, 2)
+
+def wv3(A):
+    return wv(A, 3)
+
+def wv(A, n):
+    # 1. Create a sample 4x4 array
+    win_shape = (n, n)
+    windows = np.lib.stride_tricks.sliding_window_view(A, window_shape=win_shape)
+    variances = np.var(windows, axis=(-2, -1))
+    r = np.sum(variances)
+    print("Original Array:\n", A)
+    print("\nVariances of 2x2 windows:\n", variances)
+    print(r)
+    return r
 
 if __name__ == "__main__":
 
@@ -150,3 +171,19 @@ if __name__ == "__main__":
         [1, 1, 0, 0],
         [0, 0, 0, 1]
     ], dtype=np.float64)
+    
+    F = np.array([ 
+        [1, 1, 0, 0],
+        [1, 1, 0, 0],
+        [0, 0, 0, 0],
+        [0, 0, 0, 0]
+    ], dtype=np.float64)
+
+    G = np.array([
+        [0, 0, 0, 0],
+        [0, 1, 1, 0],
+        [0, 1, 1, 0],
+        [0, 0, 0, 0]
+    ], dtype=np.float64)
+
+    print(wv2(None))
