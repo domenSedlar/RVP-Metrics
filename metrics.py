@@ -2,6 +2,18 @@ import numpy as np
 import cv2
 import numpy as np
 
+from enum import Enum
+
+class Metric(Enum):
+    NS = 0
+    MS = 1
+    ME4 = 2
+    ME8 = 3
+    MI4 = 4
+    MI8 = 5
+    WV2 = 6
+    WV3 = 7
+    L2 = 8
 
 N4 = np.array([
     [0, 1, 0],
