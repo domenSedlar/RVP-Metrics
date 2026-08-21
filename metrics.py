@@ -136,9 +136,6 @@ def wv(A, n):
     windows = np.lib.stride_tricks.sliding_window_view(A, window_shape=win_shape)
     variances = np.var(windows, axis=(-2, -1))
     r = np.sum(variances)
-    print("Original Array:\n", A)
-    print("\nVariances of 2x2 windows:\n", variances)
-    print(r)
     return r
 
 if __name__ == "__main__":
