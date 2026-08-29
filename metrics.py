@@ -128,7 +128,7 @@ def full_eval(A):
     return {
         "ME4" : me4(A),
         "ME8" : me8(A),
-        "MS4" : moore_stress4(A),
+        "NS4" : moore_stress4(A),
         "MS8" : moore_stress8(A),
         "MI4" : MoransI4(A),
         "MI8" : MoransI8(A),
