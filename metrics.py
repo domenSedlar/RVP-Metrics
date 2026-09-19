@@ -3,6 +3,7 @@ import cv2
 import numpy as np
 
 from enum import Enum
+from scipy.signal import convolve2d
 
 class Metric(Enum):
     NS = 0
@@ -37,8 +38,8 @@ def conv(x, k, borderType=cv2.BORDER_ISOLATED):
     borderType - border type,
     value - the constant, if border constant is selected
     """
-    return cv2.filter2D(x, -1, np.flip(k, -1), borderType=borderType)
-
+    return convolve2d(x.astype(np.float64), k.astype(np.float64), mode='same', boundary='fill', fillvalue=0)
+    return cv2.filter2D(x, -1, np.flip(k, -1), borderType=borderType) # this is old code
 def me4(A):
     """
     Measure of effectivness using the 4 neighborhood
@@ -145,7 +146,15 @@ def wv3(A):
 def wv(A, n):
     # 1. Create a sample 4x4 array
     win_shape = (n, n)
-    windows = np.lib.stride_tricks.sliding_window_view(A, window_shape=win_shape)
+    try:
+        windows = np.lib.stride_tricks.sliding_window_view(A, window_shape=win_shape)
+    except ValueError as e:
+        if "window shape cannot be larger than input array shape" in str(e):
+            print(f"Skipping sliding window: Array shape {A.shape} is smaller than window shape {win_shape}.")
+            windows = None 
+            return -1
+        else:
+            raise e
     variances = np.var(windows, axis=(-2, -1))
     r = np.sum(variances)
     return r
